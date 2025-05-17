@@ -11,8 +11,8 @@ export const mastra = new Mastra({
     projectName: "yc-mastra-app",
     routes: [
       {
-        pattern: "zhaoyangkuajing.cyou/*",
-        zone_name: "zhaoyangkuajing.cyou",
+        pattern: "https://yc-mastra-app.yangcongzhao123.workers.dev/*",
+        zone_name: "https://yc-mastra-app.yangcongzhao123.workers.dev",
         custom_domain: true,
       },
     ],
