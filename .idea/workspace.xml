@@ -6,52 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="593b5f3c-eeea-4517-95ad-772991dddd3e" name="Changes" comment="init">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@ai-sdk-deepseek.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@mastra-core-a2a.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@mastra-core-agent.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@mastra-core-di.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@mastra-core-eval.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@mastra-core-hooks.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@mastra-core-logger.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@mastra-core-mastra.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@mastra-core-runtime-context.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@mastra-core-storage.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@mastra-core-tools.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@mastra-core-utils.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@mastra-core.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@mastra-libsql.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/@mastra-memory.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/_virtual__virtual-zod.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/chunk-235X76GC.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/chunk-C6A6W6XS.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/chunk-CTKNWYK2.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/chunk-TAFOICHR.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/hono-body-limit.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/hono-cors.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/hono-html.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/hono-http-exception.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/hono-logger.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/hono-streaming.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/hono-timeout.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/hono-utils-filepath.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/hono-utils-mime.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/hono.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/hooks.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/html.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/index.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/index2.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/logger.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/module-resolve-map.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/storage.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/trace-api.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/utils.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/.build/zod.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/output/index.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/.mastra/output/index.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/output/index2.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/output/mastra.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/output/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/output/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mastra/output/wrangler.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/mastra/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/mastra/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -150,7 +104,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1747484835787</updated>
-      <workItem from="1747484837392" duration="11953000" />
+      <workItem from="1747484837392" duration="13422000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -184,7 +138,31 @@
       <option name="project" value="LOCAL" />
       <updated>1747496770649</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="init">
+      <option name="closed" value="true" />
+      <created>1747498622355</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1747498622355</updated>
+    </task>
+    <task id="LOCAL-00006" summary="init">
+      <option name="closed" value="true" />
+      <created>1747498634434</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1747498634434</updated>
+    </task>
+    <task id="LOCAL-00007" summary="init">
+      <option name="closed" value="true" />
+      <created>1747498640609</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1747498640609</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

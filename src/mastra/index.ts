@@ -11,8 +11,13 @@ export const mastra = new Mastra({
     projectName: "yc-mastra-app",
     routes: [
       {
-        pattern: "https://yc-mastra-app.yangcongzhao123.workers.dev/*",
-        zone_name: "https://yc-mastra-app.yangcongzhao123.workers.dev",
+        pattern: "deepseek-pages-demo.pages.dev/*",
+        zone_name: "deepseek-pages-demo.pages.dev",
+        custom_domain: false,
+      },
+      {
+        pattern: "zhaoyangkuajing.cyou/*",
+        zone_name: "zhaoyangkuajing.cyou",
         custom_domain: true,
       },
     ],
