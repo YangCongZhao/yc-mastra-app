@@ -95,18 +95,61 @@ const codeReviewAgent = new Agent({
   })
 });
 
+const ALLOWED_ORIGINS = ["https://zhaoyangkuajing.cyou", "https://deepseek-pages-demo.pages.dev", "http://localhost:3000"];
 const mastra = new Mastra({
   agents: {
     codeReviewAgent
   },
   storage: new LibSQLStore({
-    // stores telemetry, evals, ... into memory storage, if it needs to persist, change to file:../mastra.db
     url: ":memory:"
   }),
   logger: createLogger({
     name: "Mastra",
     level: "info"
-  })
+  }),
+  server: {
+    build: {
+      openAPIDocs: true,
+      swaggerUI: true
+    },
+    middleware: [{
+      path: "/api/agents/:agentId/*",
+      handler: async (c, next) => {
+        const origin = c.req.header("Origin");
+        const isAllowedOrigin = ALLOWED_ORIGINS.includes(origin) || origin?.endsWith(".pages.dev");
+        if (c.req.method === "OPTIONS") {
+          return c.json(null, {
+            status: 204,
+            headers: {
+              "Access-Control-Allow-Origin": isAllowedOrigin ? origin : ALLOWED_ORIGINS[0],
+              "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type, X-API-Key",
+              "Access-Control-Max-Age": "86400"
+            }
+          });
+        }
+        await next();
+        c.res.headers.set("Access-Control-Allow-Origin", isAllowedOrigin ? origin : ALLOWED_ORIGINS[0]);
+      }
+    }, {
+      path: "/api/agents/:agentId/generate",
+      handler: async (c, next) => {
+        const apiKey = c.req.header("X-API-Key");
+        if (!apiKey || apiKey !== process.env.MASTRA_API_KEY) {
+          return c.json({
+            error: "Invalid or missing API key"
+          }, 401);
+        }
+        await next();
+      }
+    }],
+    cors: {
+      origin: ALLOWED_ORIGINS,
+      methods: ["GET", "POST", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "X-API-Key"],
+      credentials: false
+    }
+  }
 });
 
 // src/utils/filepath.ts
