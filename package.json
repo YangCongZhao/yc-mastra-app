@@ -13,7 +13,7 @@
   "description": "",
   "type": "module",
   "engines": {
-    "node": ">=20.9.0"
+    "node": "18"
   },
   "dependencies": {
     "@ai-sdk/deepseek": "^0.2.14",
@@ -24,6 +24,7 @@
     "@mastra/memory": "^0.3.4-alpha.4",
     "zod": "^3.24.4"
   },
+
   "devDependencies": {
     "@types/node": "^22.15.18",
     "mastra": "^0.6.3-alpha.6",
