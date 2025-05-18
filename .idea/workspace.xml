@@ -85,8 +85,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.dev" />
         <item itemvalue="npm.build" />
+        <item itemvalue="npm.dev" />
       </list>
     </recent_temporary>
   </component>
@@ -105,7 +105,7 @@
       <option name="presentableId" value="Default" />
       <updated>1747484835787</updated>
       <workItem from="1747484837392" duration="14346000" />
-      <workItem from="1747528263845" duration="3617000" />
+      <workItem from="1747528263845" duration="5426000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -227,7 +227,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747530781003</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="init">
+      <option name="closed" value="true" />
+      <created>1747531927111</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1747531927111</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
