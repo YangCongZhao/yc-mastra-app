@@ -27,35 +27,34 @@ const mastra = new Mastra({
       apiEmail: "yangcongzhao123@gmail.com",
     },
     wrapHandler: (handler) => {
-      return async (request: Request) => {
-        // 处理 CORS 预检
+      return async (request: Request, env: any, ctx:any) => {
+        // 处理 preflight OPTIONS 请求
         if (request.method === "OPTIONS") {
           return new Response(null, {
             status: 204,
             headers: {
               "Access-Control-Allow-Origin": "*",
               "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-              "Access-Control-Allow-Headers": "Content-Type, Authorization",
-              "Access-Control-Allow-Credentials": "true",
+              "Access-Control-Allow-Headers": "*",
             },
           });
         }
-        const response = await handler(request);
 
-        const origin = request.headers.get("Origin") || "*";
+        // 正常请求交由 Mastra 核心 handler
+        const response = await handler(request, env, ctx);
         const headers = new Headers(response.headers);
-        headers.set("Access-Control-Allow-Origin", origin);
+
+        headers.set("Access-Control-Allow-Origin", "*");
         headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-        headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        headers.set("Access-Control-Allow-Credentials", "true");
+        headers.set("Access-Control-Allow-Headers", "*");
 
         return new Response(response.body, {
           status: response.status,
-          statusText: response.statusText,
           headers,
         });
       };
-    },
+    }
+
   }),
 
   agents: { codeReviewAgent },
