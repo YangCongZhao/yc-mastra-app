@@ -17,6 +17,14 @@ export const mastra = new Mastra({
       apiEmail: "yangcongzhao123@gmail.com",
     },
   }),
+  server: {
+    // 配置CORS，解决跨域问题
+    cors: {
+      origin: '*', // 允许所有来源访问，生产环境应该限制为特定域名
+      allowHeaders: ['Content-Type', 'Authorization'],
+      credentials: true,
+    },
+  },
   agents: { codeReviewAgent },
   storage: new LibSQLStore({
     // stores telemetry, evals, ... into memory storage, if it needs to persist, change to file:../mastra.db
