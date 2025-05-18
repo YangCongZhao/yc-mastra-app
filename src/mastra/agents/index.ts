@@ -5,6 +5,8 @@ import { Memory } from '@mastra/memory';
 // import { LibSQLStore } from '@mastra/libsql';
 import { codeReviewTool } from '../tools/githubCommentTool';
 
+// @ts-ignore
+
 export const codeReviewAgent = new Agent({
   name: 'CodeReviewAgent',
   instructions: `
@@ -22,7 +24,10 @@ export const codeReviewAgent = new Agent({
         If the user asks about previous reviews, retrieve the relevant diff and feedback from memory.
         Responses should be in Chinese.
   `,
-  model: deepseek('deepseek-chat'),
+  model: deepseek('deepseek-chat',{
+    // @ts-ignore
+    apiKey: process.env.DEEPSEEK_API_KEY,
+  }),
   tools: { codeReviewTool },
   memory: new Memory({
     // storage: new LibSQLStore({
