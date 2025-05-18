@@ -5,10 +5,6 @@ import 'stream';
 import 'pino';
 import 'pino-pretty';
 import 'crypto';
-import 'path';
-import 'fs';
-import 'node:fs/promises';
-import 'node:os';
 
 function safelyParseJSON(jsonString) {
   try {

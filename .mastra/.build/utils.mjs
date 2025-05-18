@@ -1,7 +1,7 @@
 import { RuntimeContext } from './@mastra-core-runtime-context.mjs';
 import { t as trace, S as SpanStatusCode, M as MastraBase } from './trace-api.mjs';
 import { createHash } from 'crypto';
-import { v as validatorSymbol, f as safeParseJSON, N as NoSuchModelError, A as AISDKError, h as isAbortError, j as getErrorMessage, k as APICallError, m as delay$1, n as convertBase64ToUint8Array, o as createIdGenerator, J as JSONParseError, T as TypeValidationError, q as InvalidPromptError, s as safeValidateTypes, r as getErrorMessage$1, b as convertUint8ArrayToBase64, U as UnsupportedFunctionalityError, t as isJSONObject, u as isJSONArray, g as generateId, x as convertAsyncIteratorToReadableStream } from './index2.mjs';
+import { v as validatorSymbol, f as safeParseJSON, A as AISDKError, h as convertBase64ToUint8Array, j as createIdGenerator, k as InvalidPromptError, s as safeValidateTypes, m as isAbortError, n as getErrorMessage, o as APICallError, q as delay$1, U as UnsupportedFunctionalityError, r as isJSONObject, T as TypeValidationError, t as isJSONArray, g as generateId, u as getErrorMessage$1, b as convertUint8ArrayToBase64, J as JSONParseError, x as convertAsyncIteratorToReadableStream } from './index2.mjs';
 import { l as lib } from './_virtual__virtual-zod.mjs';
 
 const ignoreOverride = Symbol("Let zodToJsonSchema decide on which parser to use");
@@ -2363,183 +2363,6 @@ function selectTelemetryAttributes({
     return { ...attributes2, [key]: value };
   }, {});
 }
-
-// core/util/split-array.ts
-function splitArray(array, chunkSize) {
-  if (chunkSize <= 0) {
-    throw new Error("chunkSize must be greater than 0");
-  }
-  const result = [];
-  for (let i = 0; i < array.length; i += chunkSize) {
-    result.push(array.slice(i, i + chunkSize));
-  }
-  return result;
-}
-
-// core/embed/embed-many.ts
-async function embedMany({
-  model,
-  values,
-  maxRetries: maxRetriesArg,
-  abortSignal,
-  headers,
-  experimental_telemetry: telemetry
-}) {
-  const { maxRetries, retry } = prepareRetries({ maxRetries: maxRetriesArg });
-  const baseTelemetryAttributes = getBaseTelemetryAttributes({
-    model,
-    telemetry,
-    headers,
-    settings: { maxRetries }
-  });
-  const tracer = getTracer(telemetry);
-  return recordSpan({
-    name: "ai.embedMany",
-    attributes: selectTelemetryAttributes({
-      telemetry,
-      attributes: {
-        ...assembleOperationName({ operationId: "ai.embedMany", telemetry }),
-        ...baseTelemetryAttributes,
-        // specific settings that only make sense on the outer level:
-        "ai.values": {
-          input: () => values.map((value) => JSON.stringify(value))
-        }
-      }
-    }),
-    tracer,
-    fn: async (span) => {
-      const maxEmbeddingsPerCall = model.maxEmbeddingsPerCall;
-      if (maxEmbeddingsPerCall == null) {
-        const { embeddings: embeddings2, usage } = await retry(() => {
-          return recordSpan({
-            name: "ai.embedMany.doEmbed",
-            attributes: selectTelemetryAttributes({
-              telemetry,
-              attributes: {
-                ...assembleOperationName({
-                  operationId: "ai.embedMany.doEmbed",
-                  telemetry
-                }),
-                ...baseTelemetryAttributes,
-                // specific settings that only make sense on the outer level:
-                "ai.values": {
-                  input: () => values.map((value) => JSON.stringify(value))
-                }
-              }
-            }),
-            tracer,
-            fn: async (doEmbedSpan) => {
-              var _a17;
-              const modelResponse = await model.doEmbed({
-                values,
-                abortSignal,
-                headers
-              });
-              const embeddings3 = modelResponse.embeddings;
-              const usage2 = (_a17 = modelResponse.usage) != null ? _a17 : { tokens: NaN };
-              doEmbedSpan.setAttributes(
-                selectTelemetryAttributes({
-                  telemetry,
-                  attributes: {
-                    "ai.embeddings": {
-                      output: () => embeddings3.map((embedding) => JSON.stringify(embedding))
-                    },
-                    "ai.usage.tokens": usage2.tokens
-                  }
-                })
-              );
-              return { embeddings: embeddings3, usage: usage2 };
-            }
-          });
-        });
-        span.setAttributes(
-          selectTelemetryAttributes({
-            telemetry,
-            attributes: {
-              "ai.embeddings": {
-                output: () => embeddings2.map((embedding) => JSON.stringify(embedding))
-              },
-              "ai.usage.tokens": usage.tokens
-            }
-          })
-        );
-        return new DefaultEmbedManyResult({ values, embeddings: embeddings2, usage });
-      }
-      const valueChunks = splitArray(values, maxEmbeddingsPerCall);
-      const embeddings = [];
-      let tokens = 0;
-      for (const chunk of valueChunks) {
-        const { embeddings: responseEmbeddings, usage } = await retry(() => {
-          return recordSpan({
-            name: "ai.embedMany.doEmbed",
-            attributes: selectTelemetryAttributes({
-              telemetry,
-              attributes: {
-                ...assembleOperationName({
-                  operationId: "ai.embedMany.doEmbed",
-                  telemetry
-                }),
-                ...baseTelemetryAttributes,
-                // specific settings that only make sense on the outer level:
-                "ai.values": {
-                  input: () => chunk.map((value) => JSON.stringify(value))
-                }
-              }
-            }),
-            tracer,
-            fn: async (doEmbedSpan) => {
-              var _a17;
-              const modelResponse = await model.doEmbed({
-                values: chunk,
-                abortSignal,
-                headers
-              });
-              const embeddings2 = modelResponse.embeddings;
-              const usage2 = (_a17 = modelResponse.usage) != null ? _a17 : { tokens: NaN };
-              doEmbedSpan.setAttributes(
-                selectTelemetryAttributes({
-                  telemetry,
-                  attributes: {
-                    "ai.embeddings": {
-                      output: () => embeddings2.map((embedding) => JSON.stringify(embedding))
-                    },
-                    "ai.usage.tokens": usage2.tokens
-                  }
-                })
-              );
-              return { embeddings: embeddings2, usage: usage2 };
-            }
-          });
-        });
-        embeddings.push(...responseEmbeddings);
-        tokens += usage.tokens;
-      }
-      span.setAttributes(
-        selectTelemetryAttributes({
-          telemetry,
-          attributes: {
-            "ai.embeddings": {
-              output: () => embeddings.map((embedding) => JSON.stringify(embedding))
-            },
-            "ai.usage.tokens": tokens
-          }
-        })
-      );
-      return new DefaultEmbedManyResult({
-        values,
-        embeddings,
-        usage: { tokens }
-      });
-    }
-  });
-}
-var DefaultEmbedManyResult = class {
-  constructor(options) {
-    this.values = options.values;
-    this.embeddings = options.embeddings;
-    this.usage = options.usage;
-  }
-};
 var DefaultGeneratedFile = class {
   constructor({
     data,
@@ -7723,43 +7546,6 @@ var DefaultStreamTextResult = class {
     });
   }
 };
-function customProvider({
-  languageModels,
-  textEmbeddingModels,
-  imageModels,
-  fallbackProvider
-}) {
-  return {
-    languageModel(modelId) {
-      if (languageModels != null && modelId in languageModels) {
-        return languageModels[modelId];
-      }
-      if (fallbackProvider) {
-        return fallbackProvider.languageModel(modelId);
-      }
-      throw new NoSuchModelError({ modelId, modelType: "languageModel" });
-    },
-    textEmbeddingModel(modelId) {
-      if (textEmbeddingModels != null && modelId in textEmbeddingModels) {
-        return textEmbeddingModels[modelId];
-      }
-      if (fallbackProvider) {
-        return fallbackProvider.textEmbeddingModel(modelId);
-      }
-      throw new NoSuchModelError({ modelId, modelType: "textEmbeddingModel" });
-    },
-    imageModel(modelId) {
-      if (imageModels != null && modelId in imageModels) {
-        return imageModels[modelId];
-      }
-      if (fallbackProvider == null ? void 0 : fallbackProvider.imageModel) {
-        return fallbackProvider.imageModel(modelId);
-      }
-      throw new NoSuchModelError({ modelId, modelType: "imageModel" });
-    }
-  };
-}
-var experimental_customProvider = customProvider;
 var ClientOrServerImplementationSchema = lib.z.object({
   name: lib.z.string(),
   version: lib.z.string()
@@ -9666,22 +9452,6 @@ var CoreToolBuilder = class extends MastraBase {
 
 // src/utils.ts
 var delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-function deepMerge(target, source) {
-  const output = { ...target };
-  if (!source) return output;
-  Object.keys(source).forEach((key) => {
-    const targetValue = output[key];
-    const sourceValue = source[key];
-    if (Array.isArray(targetValue) && Array.isArray(sourceValue)) {
-      output[key] = sourceValue;
-    } else if (sourceValue instanceof Object && targetValue instanceof Object && !Array.isArray(sourceValue) && !Array.isArray(targetValue)) {
-      output[key] = deepMerge(targetValue, sourceValue);
-    } else if (sourceValue !== void 0) {
-      output[key] = sourceValue;
-    }
-  });
-  return output;
-}
 function resolveSerializedZodOutput(schema) {
   return Function("z", `"use strict";return (${schema});`)(lib.z);
 }
@@ -9835,4 +9605,4 @@ ${JSON.stringify(message, null, 2)}
   }).flat();
 }
 
-export { embedMany as a, generateObject as b, streamObject as c, deepMerge as d, experimental_customProvider as e, delay as f, generateText as g, ensureToolProperties as h, ensureAllMessagesAreCoreMessages as i, jsonSchema as j, createMastraProxy as k, createTool as l, makeCoreTool as m, isVercelTool as n, output_exports as o, checkEvalStorageFields as p, streamText as s };
+export { generateObject as a, streamObject as b, ensureAllMessagesAreCoreMessages as c, delay as d, ensureToolProperties as e, createMastraProxy as f, generateText as g, createTool as h, isVercelTool as i, jsonSchema as j, checkEvalStorageFields as k, makeCoreTool as m, output_exports as o, streamText as s };

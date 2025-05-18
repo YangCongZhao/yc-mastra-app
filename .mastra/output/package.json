@@ -13,7 +13,6 @@
     "pino": "9.6.0",
     "pino-pretty": "13.0.0",
     "@libsql/client": "latest",
-    "fastembed": "latest",
     "@opentelemetry/instrumentation": "latest"
   },
   "pnpm": {

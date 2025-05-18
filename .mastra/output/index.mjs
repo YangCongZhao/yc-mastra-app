@@ -10,11 +10,6 @@ import { Buffer as Buffer$1 } from 'node:buffer';
 import { ReadableStream as ReadableStream$1 } from 'node:stream/web';
 import 'pino';
 import 'pino-pretty';
-import 'path';
-import '@libsql/client';
-import 'node:fs/promises';
-import 'node:os';
-import 'node:path';
 
 process.versions = process.versions || {};
 process.versions.node = '23.11.0';
