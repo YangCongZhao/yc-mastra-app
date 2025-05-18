@@ -1,18 +1,20 @@
+// 这是一个完整的Cloudflare Worker示例，用于解决你的CORS问题
+// 将这段代码保存为index.js并部署到你的Cloudflare Worker
+
 import { Mastra } from '@mastra/core/mastra';
 import { createLogger } from '@mastra/core/logger';
 import { LibSQLStore } from '@mastra/libsql';
 import { codeReviewAgent } from './agents';
 
-// 定义允许的域名列表
+// 定义允许的域名
 const allowedOrigins = [
   'https://deepseek-pages-demo.pages.dev',
   'https://zhaoyangkuajing.cyou',
-  // 开发环境
   'http://localhost:3000',
-  'http://localhost:5173',
-  // 添加其他你可能需要的域名
+  'http://localhost:5173'
 ];
 
+// 创建Mastra实例
 export const mastra = new Mastra({
   agents: { codeReviewAgent },
   storage: new LibSQLStore({
@@ -22,42 +24,94 @@ export const mastra = new Mastra({
     name: 'Mastra',
     level: 'info',
   }),
-  server: {
-    cors: {
-      origin: (origin) => {
-        // 如果请求没有origin（如服务器对服务器的请求）或者origin在允许列表中，则允许
-        return !origin || allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
-      },
-      allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      allowHeaders: ['Content-Type', 'Authorization', 'X-Development'],
-      exposeHeaders: ['Content-Length', 'X-Content-Type-Options'],
-      credentials: true, // 如果需要发送cookies等凭证，设为true
-      maxAge: 86400, // 预检请求结果缓存1天
-    },
-  },
 });
 
-// 为了确保CORS正确工作，添加一个请求处理的拦截器
-mastra.use(async (ctx, next) => {
-  // 获取请求的源
-  const origin = ctx.request.headers.get('Origin');
+// 处理CORS的函数
+function handleCors(request) {
+  const origin = request.headers.get('Origin');
+  const isAllowedOrigin = origin && allowedOrigins.includes(origin);
 
-  // 如果是预检请求或者源在允许列表中
-  if (ctx.request.method === 'OPTIONS' || !origin || allowedOrigins.includes(origin)) {
-    // 添加CORS头
-    ctx.response.headers.set('Access-Control-Allow-Origin', origin || '*');
-    ctx.response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    ctx.response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Development');
-    ctx.response.headers.set('Access-Control-Allow-Credentials', 'true');
-    ctx.response.headers.set('Access-Control-Max-Age', '86400');
+  // 如果是预检请求(OPTIONS)
+  if (request.method === 'OPTIONS') {
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': isAllowedOrigin ? origin : '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Development',
+      'Access-Control-Max-Age': '86400',
+    };
 
-    // 如果是预检请求，直接返回成功
-    if (ctx.request.method === 'OPTIONS') {
-      ctx.response.status = 204;
-      return;
-    }
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders,
+    });
   }
 
-  // 继续处理请求
-  await next();
+  return null; // 不是预检请求，继续正常处理
+}
+
+// 处理API请求的函数
+async function handleApiRequest(request) {
+  try {
+    // 使用Mastra处理请求
+    const response = await mastra.handleRequest(request);
+
+    // 获取请求的源
+    const origin = request.headers.get('Origin');
+    const isAllowedOrigin = origin && allowedOrigins.includes(origin);
+
+    // 复制原始响应并添加CORS头
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': isAllowedOrigin ? origin : '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Development',
+    };
+
+    // 从原始响应中获取所有头部
+    const responseHeaders = new Headers(response.headers);
+
+    // 添加CORS头
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      responseHeaders.set(key, value);
+    });
+
+    // 返回带有CORS头的新响应
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: responseHeaders,
+    });
+  } catch (error) {
+    // 错误处理
+    console.error('API请求处理错误:', error);
+
+    // 获取请求的源
+    const origin = request.headers.get('Origin');
+    const isAllowedOrigin = origin && allowedOrigins.includes(origin);
+
+    // 返回错误响应，同时添加CORS头
+    return new Response(JSON.stringify({ error: error.message || '内部服务器错误' }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': isAllowedOrigin ? origin : '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Development',
+      }
+    });
+  }
+}
+
+// Cloudflare Worker入口点
+addEventListener('fetch', event => {
+  const request = event.request;
+
+  // 首先检查是否是CORS预检请求
+  const corsResponse = handleCors(request);
+  if (corsResponse) {
+    event.respondWith(corsResponse);
+    return;
+  }
+
+  // 处理实际的API请求
+  event.respondWith(handleApiRequest(request));
 });
