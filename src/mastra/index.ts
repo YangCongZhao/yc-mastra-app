@@ -3,6 +3,7 @@ import { createLogger } from '@mastra/core/logger';
 import { LibSQLStore } from '@mastra/libsql';
 import { codeReviewAgent } from './agents';
 export const mastra = new Mastra({
+  agents: { codeReviewAgent },
   server: {
     // 配置CORS，解决跨域问题
     cors: {
@@ -11,9 +12,8 @@ export const mastra = new Mastra({
       credentials: true,
     },
   },
-  agents: { codeReviewAgent },
   storage: new LibSQLStore({
-    url: ":memory:",
+    url: "file:../mastra.db",
   }),
   logger: createLogger({
     name: 'Mastra',
