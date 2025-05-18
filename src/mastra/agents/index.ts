@@ -2,7 +2,7 @@
 import { deepseek } from '@ai-sdk/deepseek';
 import { Agent } from '@mastra/core';
 import { Memory } from '@mastra/memory';
-import { LibSQLStore } from '@mastra/libsql';
+// import { LibSQLStore } from '@mastra/libsql';
 import { codeReviewTool } from '../tools/githubCommentTool';
 
 export const codeReviewAgent = new Agent({
@@ -25,9 +25,9 @@ export const codeReviewAgent = new Agent({
   model: deepseek('deepseek-chat'),
   tools: { codeReviewTool },
   memory: new Memory({
-    storage: new LibSQLStore({
-      url: 'file:../mastra.db',
-    }),
+    // storage: new LibSQLStore({
+    //   url: 'file:../mastra.db',
+    // }),
     options: {
       lastMessages: 10,
       semanticRecall: false,
